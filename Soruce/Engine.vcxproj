@@ -99,7 +99,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.\MathGeoLib\include;.\SDL\include;.\glew-2.1.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\imgui;.\MathGeoLib\include;.\SDL\include;.\glew-2.1.0\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
