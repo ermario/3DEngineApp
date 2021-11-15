@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
-#include "Globals.h"
+
+class Application;
 
 class ModuleProgram : public Module
 {
@@ -9,9 +10,12 @@ public:
 	~ModuleProgram();
 
 	bool Init();
-	update_status PreUpdate();
-	update_status Update();
-	update_status PostUpdate();
-	bool CleanUp();
+	char* LoadShaderSource(const char* shader_path);
+	unsigned CompileShader(const char* source, unsigned type); //unsigned == unsigned int
+	unsigned CreateProgram(unsigned vertex_shader, unsigned fragment_shader);
+	unsigned GetProgramId() { return program_id; };
 
+	bool CleanUp();
+private:
+	unsigned program_id;
 };

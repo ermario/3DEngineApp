@@ -1,5 +1,6 @@
 #pragma once
 #include <windows.h>
+
 #include <stdio.h>
 
 #define LOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
@@ -20,3 +21,7 @@ enum update_status
 #define RESIZABLE false
 #define VSYNC true
 #define TITLE "Super Awesome Engine"
+
+// Files -----------
+#define SHADER_VERTEX_FILEPATH "././Game/test_vertex.glsl"
+#define SHADER_FRAGMENT_FILEPATH "././Game/test_fragment.glsl"

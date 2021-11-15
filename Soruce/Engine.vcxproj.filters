@@ -18,7 +18,7 @@
     <ClCompile Include="log.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleDebugDraw.cpp">
+    <ClCompile Include="ModuleRenderExercise.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,6 +53,9 @@
     </ClInclude>
     <ClInclude Include="debugdraw.h">
       <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleRenderExercise.h">
+      <Filter>Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

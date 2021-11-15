@@ -26,14 +26,20 @@ bool ModuleRender::Init()
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24); // we want to have a depth buffer with 24 bits
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8); // we want to have a stencil buffer with 8 bits
 
-	context = SDL_GL_CreateContext(App->window->window);
+	context = SDL_GL_CreateContext(App->window->window); // create an OpenGL context for an OpenGL window, and make it current
+
 	GLenum err = glewInit();
+	if (GLEW_OK != err) //Checking for errors in glew init
+	{
+		LOG("GLEW FAILED INITIALIZING: %s", glewGetErrorString(err));
+	}
+	else{ LOG("Using Glew %s", glewGetString(GLEW_VERSION)); }
+
+	//Detect current hardwar and dirver capabilities
 	LOG("Vendor: %s", glGetString(GL_VENDOR));
 	LOG("Renderer: %s", glGetString(GL_RENDERER));
 	LOG("OpenGL version supported %s", glGetString(GL_VERSION));
 	LOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-
-	LOG("Using Glew %s", glewGetString(GLEW_VERSION));
 
 	glEnable(GL_DEPTH_TEST); // Enable depth test
 	glEnable(GL_CULL_FACE); // Enable cull backward faces
@@ -47,11 +53,13 @@ update_status ModuleRender::PreUpdate()
 	int width = NULL;
 	int height = NULL;
 
-	SDL_GetWindowSize(App->window->window, &width, &height);
-	glViewport(0, 0, width, height);
+	SDL_GetWindowSize(App->window->window, &width, &height); //update de width and height with the window size
+	glViewport(0, 0, width, height); // set the view port
 
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // specify clear values for the color buffers - RGBAlpha
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear buffers to preset values (from above)
+
+	glUseProgram(App->shader_program->GetProgramId());
 
 	return UPDATE_CONTINUE;
 }
@@ -64,7 +72,7 @@ update_status ModuleRender::Update()
 
 update_status ModuleRender::PostUpdate()
 {
-	SDL_GL_SwapWindow(App->window->window);
+	SDL_GL_SwapWindow(App->window->window); // update a window with OpenGL rendering.
 	return UPDATE_CONTINUE;
 }
 
@@ -72,9 +80,8 @@ update_status ModuleRender::PostUpdate()
 bool ModuleRender::CleanUp()
 {
 	LOG("Destroying renderer");
-	SDL_GL_DeleteContext(context);
-	//Destroy window
-
+	SDL_GL_DeleteContext(context); //Destroy window
+	
 	return true;
 }
 
