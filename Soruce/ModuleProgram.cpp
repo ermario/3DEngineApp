@@ -49,8 +49,11 @@ char* ModuleProgram::LoadShaderSource(const char* shader_path)
 		fread(data, 1, size, file); // read the file and write it on data variable
 		data[size] = 0; //set the end of the data to 0 so we know where it ends
 		fclose(file);
+		LOG("\n---- Loaded Shader ----\n");
 	}
-	LOG("\n---- Loaded Shader ----\n");
+	else {
+		LOG("\n---- Shader NOT Loaded ----\n");
+	}
 	return data;
 	
 }

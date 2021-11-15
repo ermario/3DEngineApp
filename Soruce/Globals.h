@@ -18,10 +18,10 @@ enum update_status
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 #define FULLSCREEN false
-#define RESIZABLE false
+#define RESIZABLE true
 #define VSYNC true
 #define TITLE "Super Awesome Engine"
 
 // Files -----------
-#define SHADER_VERTEX_FILEPATH "././Game/test_vertex.glsl"
-#define SHADER_FRAGMENT_FILEPATH "././Game/test_fragment.glsl"
+#define SHADER_VERTEX_FILEPATH "test_vertex.glsl"
+#define SHADER_FRAGMENT_FILEPATH "test_fragment.glsl"
