@@ -46,7 +46,7 @@ update_status ModuleRenderExercise::Update()
 	// 1 triangle to draw = 3 vertices 
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 	
-    return update_status::UPDATE_CONTINUE;
+    return UPDATE_CONTINUE;
 }
 
 ModuleRenderExercise::~ModuleRenderExercise()

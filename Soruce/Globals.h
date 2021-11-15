@@ -25,3 +25,4 @@ enum update_status
 // Files -----------
 #define SHADER_VERTEX_FILEPATH "test_vertex.glsl"
 #define SHADER_FRAGMENT_FILEPATH "test_fragment.glsl"
+
