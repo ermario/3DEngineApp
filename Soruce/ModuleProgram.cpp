@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "ModuleProgram.h"
 #include "Globals.h"
 #include "GL/glew.h"
@@ -19,20 +20,15 @@ bool ModuleProgram::Init()
 	unsigned int vertex_shader_id = CompileShader(LoadShaderSource(SHADER_VERTEX_FILEPATH), GL_VERTEX_SHADER);
 	unsigned int fragment_shader_id = CompileShader(LoadShaderSource(SHADER_FRAGMENT_FILEPATH), GL_FRAGMENT_SHADER);
 
-	// Link shaders and create program:
-	if (program_id = CreateProgram(vertex_shader_id, fragment_shader_id))
-	{
-		// Use the created program:
-		glUseProgram(program_id);
+	program_id = CreateProgram(vertex_shader_id, fragment_shader_id);
 
-		// Delete shaders since they are linked into the program and they are not needed anymore:
-		glDeleteShader(vertex_shader_id);
-		glDeleteShader(fragment_shader_id);
-	}
-	else {
-		LOG("ERROR in program creation <-------")
-		return_flag = false;
-	}
+	// Use the created program:
+	glUseProgram(program_id);
+
+	// Delete shaders since they are linked into the program and they are not needed anymore:
+	glDeleteShader(vertex_shader_id);
+	glDeleteShader(fragment_shader_id);
+
 
 	return return_flag;
 
