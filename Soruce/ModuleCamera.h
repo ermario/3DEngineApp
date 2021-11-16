@@ -3,7 +3,7 @@
 #include "Geometry/Frustum.h"
 
 
-class ModuleCamera : public Frustum
+class ModuleCamera : public Module
 {
 public:
 	ModuleCamera();
