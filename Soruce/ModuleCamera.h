@@ -12,6 +12,9 @@ public:
 	bool Init();
 	bool Clear();
 	update_status Update();
+
+	float3x4 GetViewMatrix() const { return frustum.ViewMatrix(); };
+	float4x4 GetProjectionMatrix() const { return frustum.ProjectionMatrix(); };
 private:
 	Frustum frustum;
 };

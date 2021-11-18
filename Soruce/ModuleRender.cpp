@@ -1,9 +1,12 @@
 #include "Globals.h"
 #include "Application.h"
+#include "SDL.h"
 #include "ModuleRender.h"
 #include "ModuleProgram.h"
 #include "ModuleWindow.h"
-#include "SDL.h"
+#include "ModuleCamera.h"
+#include "ModuleDebugDraw.h"
+
 
 ModuleRender::ModuleRender()
 {
@@ -71,6 +74,9 @@ update_status ModuleRender::Update()
 	/* REMOVE FROM HERE*/
 
 	// GROUND GRID
+	
+
+	/*
 	glLineWidth(1.0f);
 	float d = 200.0f;
 	glBegin(GL_LINES);
@@ -82,7 +88,7 @@ update_status ModuleRender::Update()
 		glVertex3f(d, 0.0f, i);
 	}
 	glEnd();
-	
+	*/
 	// 3D AXES PRINTING
 
 
@@ -93,6 +99,7 @@ update_status ModuleRender::Update()
 
 update_status ModuleRender::PostUpdate()
 {
+	App->grid->Draw(App->camera->GetViewMatrix(), App->camera->GetProjectionMatrix(),10,10);
 	SDL_GL_SwapWindow(App->window->window); // update a window with OpenGL rendering.
 	return UPDATE_CONTINUE;
 }

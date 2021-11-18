@@ -1,4 +1,3 @@
-/*
 #ifndef _MODULE_DEBUGDRAW_H_
 #define _MODULE_DEBUGDRAW_H_
 

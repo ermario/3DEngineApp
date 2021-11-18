@@ -1,4 +1,3 @@
-#include <algorithm>
 #include "ModuleProgram.h"
 #include "Globals.h"
 #include "GL/glew.h"
