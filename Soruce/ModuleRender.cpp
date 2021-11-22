@@ -49,6 +49,10 @@ bool ModuleRender::Init()
 	glEnable(GL_CULL_FACE); // Enable cull backward faces
 	glFrontFace(GL_CCW); // Front faces will be counter clockwise
 
+	//INIT TEXTURES
+
+
+
 	return true;
 }
 
@@ -56,14 +60,11 @@ update_status ModuleRender::PreUpdate()
 {
 	int width = NULL;
 	int height = NULL;
-	unsigned program_id = 0;
 	SDL_GetWindowSize(App->window->window, &width, &height); //update de width and height with the window size
 	glViewport(0, 0, width, height); // set the view port
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // specify clear values for the color buffers - RGBAlpha
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear buffers to preset values (from above)
-	//program_id = App->shader_program->GetProgramId();
-	//glUseProgram(program_id);
 
 	return UPDATE_CONTINUE;
 }
@@ -71,35 +72,14 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
-	/* REMOVE FROM HERE*/
-
-	// GROUND GRID
-	
-
-	/*
-	glLineWidth(1.0f);
-	float d = 200.0f;
-	glBegin(GL_LINES);
-	for (float i = -d; i <= d; i += 1.0f)
-	{
-		glVertex3f(i, 0.0f, -d);
-		glVertex3f(i, 0.0f, d);
-		glVertex3f(-d, 0.0f, i);
-		glVertex3f(d, 0.0f, i);
-	}
-	glEnd();
-	*/
-	// 3D AXES PRINTING
-
-
-	/* TO HERE*/
-
+	glUseProgram(App->shader_program->GetProgramId());
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleRender::PostUpdate()
 {
-	App->grid->Draw(App->camera->GetViewMatrix(), App->camera->GetProjectionMatrix(),10,10);
+	auto& size = App->window->screen_surface;
+	App->grid->Draw(App->camera->GetViewMatrix(), App->camera->GetProjectionMatrix(),size->w, size->h);
 	SDL_GL_SwapWindow(App->window->window); // update a window with OpenGL rendering.
 	return UPDATE_CONTINUE;
 }

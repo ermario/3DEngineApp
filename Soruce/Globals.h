@@ -43,6 +43,9 @@ enum update_status
 #define VSYNC true
 #define TITLE "Super Awesome Engine"
 
+//CONSTANTS
+#define MILI_TO_SECONDS = 1000.0f
+
 // Files -----------
 #define SHADER_VERTEX_FILEPATH "test_vertex.glsl"
 #define SHADER_FRAGMENT_FILEPATH "test_fragment.glsl"

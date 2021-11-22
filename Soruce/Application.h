@@ -32,10 +32,12 @@ public:
 	ModuleRenderExercise* render_exercise = nullptr;
 	ModuleCamera* camera = nullptr;
 	ModuleDebugDraw* grid = nullptr;
-
+	inline uint32_t GetDeltaTime() { return delta_time; }
 private:
 
 	std::list<Module*> modules;
+	uint32_t delta_time = 0;
+	uint32_t ticks_count = 0;
 
 };
 
