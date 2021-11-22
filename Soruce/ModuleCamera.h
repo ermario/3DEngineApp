@@ -18,5 +18,6 @@ public:
 	float4x4 GetProjectionMatrixTransposed() const { return frustum.ProjectionMatrix().Transposed(); };
 private:
 	Frustum frustum;
+	double angle = 0;
 };
 
