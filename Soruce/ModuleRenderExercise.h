@@ -1,5 +1,6 @@
 #pragma once
 #include "Module.h"
+#include "Geometry/Frustum.h"
 
 
 class ModuleRenderExercise : public Module
@@ -16,5 +17,4 @@ public:
 
 private:
     unsigned vertex_buffer_object = 0;
-
 };

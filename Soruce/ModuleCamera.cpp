@@ -129,7 +129,6 @@ void ModuleCamera::CameraMovement()
 		vec oldFront = frustum.Front().Normalized();
 		frustum.SetUp(rotation_vector.MulDir(oldUp));
 		frustum.SetFront(rotation_vector.MulDir(oldFront));
-		LOG("%f", frustum.Pos());
 	}
 
 	//ROTATE DOWN
