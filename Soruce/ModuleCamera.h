@@ -16,8 +16,11 @@ public:
 	float4x4 GetViewMatrix() const { return float4x4(frustum.ViewMatrix()); };
 	float4x4 GetProjectionMatrix() const { return frustum.ProjectionMatrix(); };
 	float4x4 GetProjectionMatrixTransposed() const { return frustum.ProjectionMatrix().Transposed(); };
+	void ImGuiCamera();
 private:
 	Frustum frustum;
 	double angle = 0;
+	float3 camera_position; 
+	bool camera_locked = false;
 };
 

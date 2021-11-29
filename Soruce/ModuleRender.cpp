@@ -21,7 +21,7 @@ ModuleRender::~ModuleRender()
 // Called before render is available
 bool ModuleRender::Init()
 {
-	LOG("Creating Renderer context");
+	EngineLOG("Creating Renderer context");
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4); // desired version
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
@@ -35,15 +35,15 @@ bool ModuleRender::Init()
 	GLenum err = glewInit();
 	if (GLEW_OK != err) //Checking for errors in glew init
 	{
-		LOG("GLEW FAILED INITIALIZING: %s", glewGetErrorString(err));
+		EngineLOG("GLEW FAILED INITIALIZING: %s", glewGetErrorString(err));
 	}
-	else{ LOG("Using Glew %s", glewGetString(GLEW_VERSION)); }
+	else{ EngineLOG("Using Glew %s", glewGetString(GLEW_VERSION)); }
 
 	//Detect current hardwar and dirver capabilities
-	LOG("Vendor: %s", glGetString(GL_VENDOR));
-	LOG("Renderer: %s", glGetString(GL_RENDERER));
-	LOG("OpenGL version supported %s", glGetString(GL_VERSION));
-	LOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	EngineLOG("Vendor: %s", glGetString(GL_VENDOR));
+	EngineLOG("Renderer: %s", glGetString(GL_RENDERER));
+	EngineLOG("OpenGL version supported %s", glGetString(GL_VERSION));
+	EngineLOG("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	glEnable(GL_DEPTH_TEST); // Enable depth test
 	glEnable(GL_CULL_FACE); // Enable cull backward faces
@@ -73,13 +73,14 @@ update_status ModuleRender::PreUpdate()
 update_status ModuleRender::Update()
 {
 	glUseProgram(App->shader_program->GetProgramId());
+	auto& size = App->window->screen_surface;
+	App->grid->Draw(App->camera->GetViewMatrix(), App->camera->GetProjectionMatrix(), size->w, size->h);
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleRender::PostUpdate()
 {
-	auto& size = App->window->screen_surface;
-	App->grid->Draw(App->camera->GetViewMatrix(), App->camera->GetProjectionMatrix(),size->w, size->h);
+
 	SDL_GL_SwapWindow(App->window->window); // update a window with OpenGL rendering.
 	return UPDATE_CONTINUE;
 }
@@ -87,7 +88,7 @@ update_status ModuleRender::PostUpdate()
 // Called before quitting
 bool ModuleRender::CleanUp()
 {
-	LOG("Destroying renderer");
+	EngineLOG("Destroying renderer");
 	SDL_GL_DeleteContext(context); //Destroy window
 	
 	return true;

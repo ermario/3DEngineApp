@@ -3,7 +3,7 @@
 #include "GL/glew.h"
 #include "Application.h"
 #include "ModuleProgram.h"
-
+#include "ModuleCamera.h"
 
 float vertices[] = {
 	-1.0f, -1.0f, 0.0f,
@@ -20,6 +20,7 @@ bool ModuleRenderExercise::Init()
 {
 	glGenBuffers(1, &vertex_buffer_object);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
+
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	// size = 3 float per vertex
@@ -32,30 +33,14 @@ bool ModuleRenderExercise::Init()
 	float4x4 model, view, projection;
 
 	//MODEL
-	model = float4x4::FromTRS(float3(2.0f, 0.0f, 0.0f),float4x4::RotateZ(pi / 4.0f),float3(2.0f, 1.0f, 0.0f));
-
-
-	//view = LookAt(float3(0.0f, 4.0f, 8.0f), float3(0.0f, 0.0f, 0.0f), float3::unitY);
-
-	//PROJECTION
-	Frustum frustum;
-	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
-	frustum.SetPos(float3::zero);
-	frustum.SetFront(-float3::unitZ);
-	frustum.SetUp(float3::unitY);
-	frustum.SetViewPlaneDistances(0.1f, 100.0f);
-	frustum.SetHorizontalFovAndAspectRatio(90.0f, 1.0f);
-
-	float4x4 proj = frustum.ProjectionMatrix();
-
-	//VIEW
-	view = float4x4(frustum.ViewMatrix()).Transposed();
-
+	//model = float4x4::FromTRS(float3(2.0f, 0.0f, 0.0f),float4x4::RotateZ(pi / 4.0f),float3(2.0f, 1.0f, 0.0f));
+	model = float4x4::identity;
 	glUniformMatrix4fv(glGetUniformLocation(program_id, "model"), 1, GL_TRUE, &model[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(program_id, "view"), 1, GL_TRUE, &view[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(program_id, "proj"), 1, GL_TRUE, &projection[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(program_id, "view"), 1, GL_TRUE, &App->camera->GetViewMatrix()[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(program_id, "proj"), 1, GL_TRUE, &App->camera->GetProjectionMatrix()[0][0]);
 	
 	// TODO: bind buffer and vertex attributes
+	glBindVertexArray(vertex_buffer_object);
 
 	return true;
 }

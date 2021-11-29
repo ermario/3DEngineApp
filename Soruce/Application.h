@@ -12,6 +12,7 @@ class ModuleProgram;
 class ModuleRenderExercise;
 class ModuleCamera;
 class ModuleDebugDraw;
+class ModuleImGui;
 
 class Application
 {
@@ -32,6 +33,7 @@ public:
 	ModuleRenderExercise* render_exercise = nullptr;
 	ModuleCamera* camera = nullptr;
 	ModuleDebugDraw* grid = nullptr;
+	ModuleImGui* imgui = nullptr;
 	inline uint32_t GetDeltaTime() { return delta_time; }
 private:
 

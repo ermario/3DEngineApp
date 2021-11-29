@@ -14,3 +14,8 @@ void log(const char file[], int line, const char* format, ...)
 	sprintf_s(tmp_string2, 4096, "\n%s(%d) : %s", file, line, tmp_string);
 	OutputDebugString(tmp_string2);
 }
+
+void OpenBrowser(const char* url)
+{
+	ShellExecute(NULL, NULL, url, NULL, NULL, SW_SHOWNORMAL);
+}

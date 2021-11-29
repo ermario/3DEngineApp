@@ -4,7 +4,9 @@
 #include "GL/glew.h"
 #include "Application.h"
 #include "ModuleInput.h"
-
+#include "imgui.h"
+#include "imgui_impl_sdl.h"
+#include "imgui_impl_opengl3.h"
 
 ModuleCamera::ModuleCamera()
 {
@@ -20,8 +22,10 @@ bool ModuleCamera::Init()
 	frustum.SetViewPlaneDistances(0.1f, 200.0f);
 	frustum.SetHorizontalFovAndAspectRatio(90.0f, 1.0f);
 	frustum.SetPos(float3(0.0f, 5.0f, -5.0f));
-	frustum.SetFront(float3::unitZ);
-	frustum.SetUp(float3::unitY);
+	float3x3 world_rotation = float3x3::identity;
+	frustum.SetFront(world_rotation.WorldZ());
+	frustum.SetUp(world_rotation.WorldY());
+	camera_position = frustum.Pos();
 	float4x4 projectionGL = frustum.ProjectionMatrix().Transposed();
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(*projectionGL.v);
@@ -60,7 +64,7 @@ void ModuleCamera::CameraMovement()
 	{
 		movement_speed = movement_speed * 2;
 		rotation_speed = rotation_speed * 2;
-		LOG("SHIFT %f and %f speed",movement_speed,rotation_speed);
+		EngineLOG("SHIFT %f and %f speed",movement_speed,rotation_speed);
 	}
 
 	float new_pos = movement_speed * delta;
@@ -104,41 +108,70 @@ void ModuleCamera::CameraMovement()
 		vec oldPos = frustum.Pos();
 		frustum.SetPos(oldPos.Add(frustum.WorldRight() * new_pos));
 	}
-	//ROTATE LEFT
-	if (App->input->GetKey(SDL_SCANCODE_LEFT))
-	{
+	if (!camera_locked) {
+		//ROTATE LEFT
+		if (App->input->GetKey(SDL_SCANCODE_LEFT))
+		{
 
-		float3x3 rotation_vector = float3x3::RotateAxisAngle(float3::unitY, new_angle);
-		vec oldFront = frustum.Front().Normalized();
-		frustum.SetFront(rotation_vector.MulDir(oldFront));
+			Quat rot = Quat::RotateY(new_angle);
+			frustum.SetFront(rot.Mul(frustum.Front()).Normalized());
+			frustum.SetUp(rot.Mul(frustum.Up()).Normalized());
+		}
+
+		//ROTATE RIGHT
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT))
+		{
+			Quat rotation_vector = Quat::RotateY(-new_angle);
+			frustum.SetFront(rotation_vector.Mul(frustum.Front()).Normalized());
+			frustum.SetUp(rotation_vector.Mul(frustum.Up()).Normalized());
+		}
+
+		//ROTATE UP
+		if (App->input->GetKey(SDL_SCANCODE_UP))
+		{
+			Quat rotation_vector = Quat::RotateAxisAngle(frustum.WorldRight(), new_angle);
+			frustum.SetUp(rotation_vector.Mul(frustum.Up()).Normalized());
+			frustum.SetFront(rotation_vector.Mul(frustum.Front()).Normalized());
+		}
+
+		//ROTATE DOWN
+		if (App->input->GetKey(SDL_SCANCODE_DOWN))
+		{
+			float3x3 rotation_vector = float3x3::RotateAxisAngle(frustum.WorldRight(), -new_angle);
+			vec oldUp = frustum.Up().Normalized();
+			vec oldFront = frustum.Front().Normalized();
+			frustum.SetUp(rotation_vector.MulDir(oldUp));
+			frustum.SetFront(rotation_vector.MulDir(oldFront));
+
+		}
+		if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN) 
+		{
+			frustum.SetUp(float3(0.0f, 0.0f, 1.0f));
+			frustum.SetFront(float3(0.0f, -1.0f, 0.0f));
+		}
 	}
+	
+}
 
-	//ROTATE RIGHT
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT))
-	{
-		float3x3 rotation_vector = float3x3::RotateAxisAngle(float3::unitY, -new_angle);
-		vec oldFront = frustum.Front().Normalized();
-		frustum.SetFront(rotation_vector.MulDir(oldFront));
-	}
+void ModuleCamera::ImGuiCamera()
+{
+	camera_position = frustum.Pos();
+	float3 camera_direction = frustum.Front();
+	float3 camera_inclination = frustum.Up();
+	ImGui::Separator;
+	ImGui::Text("Camera Position");
+	ImGui::SliderFloat3("pX, pY, pZ", &camera_position[0], -10.0f, 10.0f, "%.3f", 1.0f);
+	ImGui::Separator;
+	ImGui::Text("Camera Direction");
+	ImGui::SliderFloat3("dX, dY, dZ", &camera_direction[0], -10.0f, 10.0f, "%.3f", 1.0f);
+	ImGui::Separator;
+	ImGui::Text("Camera Inclination");
+	ImGui::SliderFloat3("iX, iY, iZ", &camera_inclination[0], -10.0f, 10.0f, "%.3f", 1.0f);
 
-	//ROTATE UP
-	if (App->input->GetKey(SDL_SCANCODE_UP))
-	{
-		float3x3 rotation_vector = float3x3::RotateAxisAngle(frustum.WorldRight(), new_angle);
-		vec oldUp = frustum.Up().Normalized();
-		vec oldFront = frustum.Front().Normalized();
-		frustum.SetUp(rotation_vector.MulDir(oldUp));
-		frustum.SetFront(rotation_vector.MulDir(oldFront));
-	}
 
-	//ROTATE DOWN
-	if (App->input->GetKey(SDL_SCANCODE_DOWN))
-	{
-		float3x3 rotation_vector = float3x3::RotateAxisAngle(frustum.WorldRight(), -new_angle);
-		vec oldUp = frustum.Up().Normalized();
-		vec oldFront = frustum.Front().Normalized();
-		frustum.SetUp(rotation_vector.MulDir(oldUp));
-		frustum.SetFront(rotation_vector.MulDir(oldFront));
-
+	ImGui::Checkbox("Lock Model", &camera_locked);
+	if (camera_locked) {
+		ImGui::SameLine();
+		ImGui::Text("(Rotation disabled)");
 	}
 }

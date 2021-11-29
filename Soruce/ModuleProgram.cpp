@@ -16,8 +16,8 @@ bool ModuleProgram::Init()
 	bool return_flag = true;
 
 	// Load shaders from files and compile them:
-	unsigned int vertex_shader_id = CompileShader(LoadShaderSource(SHADER_VERTEX_FILEPATH), GL_VERTEX_SHADER);
-	unsigned int fragment_shader_id = CompileShader(LoadShaderSource(SHADER_FRAGMENT_FILEPATH), GL_FRAGMENT_SHADER);
+	unsigned int vertex_shader_id = CompileShader(LoadShaderSource("vertex.glsl"), GL_VERTEX_SHADER);
+	unsigned int fragment_shader_id = CompileShader(LoadShaderSource("fragment.glsl"), GL_FRAGMENT_SHADER);
 
 	program_id = CreateProgram(vertex_shader_id, fragment_shader_id);
 
@@ -48,10 +48,10 @@ char* ModuleProgram::LoadShaderSource(const char* shader_path)
 		fread(data, 1, size, file); // read the file and write it on data variable
 		data[size] = 0; //set the end of the data to 0 so we know where it ends
 		fclose(file);
-		LOG("\n---- Loaded Shader ----\n");
+		EngineLOG("\n---- Loaded Shader ----\n");
 	}
 	else {
-		LOG("\n---- Shader NOT Loaded ----\n");
+		EngineLOG("\n---- Shader NOT Loaded ----\n");
 	}
 	return data;
 	
@@ -73,7 +73,7 @@ unsigned ModuleProgram::CompileShader(const char* source, unsigned type)
 			int written = 0;
 			char* info = (char*)malloc(len);
 			glGetShaderInfoLog(shader_id, len, &written, info);
-			LOG("Log Info: %s", info);
+			EngineLOG("Log Info: %s", info);
 			free(info);
 		}
 	}
@@ -97,7 +97,7 @@ unsigned ModuleProgram::CreateProgram(unsigned vertex_shader, unsigned fragment_
 			int written = 0;
 			char* info = (char*)malloc(len);
 			glGetProgramInfoLog(program_id, len, &written, info);
-			LOG("Program Log Info: %s", info);
+			EngineLOG("Program Log Info: %s", info);
 			free(info);
 		}
 	}
