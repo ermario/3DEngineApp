@@ -5,6 +5,7 @@
 
 #define EngineLOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
 #define BROWSER(url) OpenBrowser(url);
+#define DEGTORAD .0174533f
 
 void log(const char file[], int line, const char* format, ...);
 
@@ -39,8 +40,8 @@ enum update_status
 	 }
 
 // Configuration -----------
-#define SCREEN_WIDTH 1768
-#define SCREEN_HEIGHT 992
+#define SCREEN_WIDTH 1024
+#define SCREEN_HEIGHT 720
 #define SCREEN_SIZE 2
 #define FULLSCREEN false
 #define RESIZABLE true

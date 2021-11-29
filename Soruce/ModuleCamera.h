@@ -14,6 +14,7 @@ public:
 	update_status Update();
 	void CameraMovement();
 	float4x4 GetViewMatrix() const { return float4x4(frustum.ViewMatrix()); };
+	float4x4 GetViewMatrixTransposed() const { return float4x4(frustum.ViewMatrix()).Transposed(); };
 	float4x4 GetProjectionMatrix() const { return frustum.ProjectionMatrix(); };
 	float4x4 GetProjectionMatrixTransposed() const { return frustum.ProjectionMatrix().Transposed(); };
 	void ImGuiCamera();

@@ -19,8 +19,8 @@ ModuleCamera::~ModuleCamera()
 bool ModuleCamera::Init()
 {
 	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
-	frustum.SetViewPlaneDistances(0.1f, 200.0f);
-	frustum.SetHorizontalFovAndAspectRatio(90.0f, 1.0f);
+	frustum.SetViewPlaneDistances(0.1f, 100.0f);
+	frustum.SetHorizontalFovAndAspectRatio(DEGTORAD * 90.0f, float(SCREEN_WIDTH)/float(SCREEN_HEIGHT));
 	frustum.SetPos(float3(0.0f, 5.0f, -5.0f));
 	float3x3 world_rotation = float3x3::identity;
 	frustum.SetFront(world_rotation.WorldZ());
@@ -146,6 +146,7 @@ void ModuleCamera::CameraMovement()
 		}
 		if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN) 
 		{
+			frustum.SetPos(float3(0.0f, 10.0f, 0.0f));
 			frustum.SetUp(float3(0.0f, 0.0f, 1.0f));
 			frustum.SetFront(float3(0.0f, -1.0f, 0.0f));
 		}
