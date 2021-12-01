@@ -4,15 +4,20 @@
 #include "Application.h"
 #include "ModuleProgram.h"
 #include "ModuleCamera.h"
+#include "ModuleTexture.h"
 
 
 float cube_vertices[] = {
-    -1.0f, 1.0f, 0.0f, // triángulo 1 : comienza
+    -1.0f, 1.0f, 0.0f, // Triangle 1
      1.0f,-1.0f, 0.0f, 
     -1.0f,-1.0f, 0.0f,
-    -1.0f, 1.0f, 0.0f, // triángulo 2 : comienza
+    -1.0f, 1.0f, 0.0f, // Triangle 2
      1.0f, 1.0f, 0.0f,
-     1.0f,-1.0f, 0.0f
+     1.0f,-1.0f, 0.0f,
+     0.0f, 1.0f,       // Texture
+     1.0f, 1.0f,
+     1.0f, 0.0f,
+     0.0f, 0.0f
 };
 
 
@@ -68,8 +73,16 @@ bool ModuleRenderExercise::Init()
     glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_STATIC_DRAW);
     // size = 3 float per vertex
     // stride = 0 is equivalent to stride = sizeof(float)*3
+    glEnableVertexAttribArray(0); // Shader
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    glEnableVertexAttribArray(0);
+
+    glEnableVertexAttribArray(1); // Textures
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(float) * 3 * 6)); //3 * 6 is the size of the vertices, buffer offset 
+
+    glActiveTexture(GL_TEXTURE0);
+    Texture txtur = App->textures->CompileTexture("Textures/Baker_house.png");
+    glBindTexture(GL_TEXTURE_2D, App->textures->GetTexture(&txtur));
+    glUniform1i(glGetUniformLocation(App->shader_program->GetProgramId(), "mytexture"), 0);
 
 
 

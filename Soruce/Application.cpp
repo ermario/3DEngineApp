@@ -9,6 +9,7 @@
 #include "ModuleDebugDraw.h"
 #include "ModuleInput.h"
 #include "ModuleImGui.h"
+#include "ModuleTexture.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ Application::Application()
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(grid = new ModuleDebugDraw());
 	modules.push_back(shader_program = new ModuleProgram());
+	modules.push_back(textures = new ModuleTexture());
 	modules.push_back(render_exercise = new ModuleRenderExercise());
 	modules.push_back(imgui = new ModuleImGui());
 	modules.push_back(input = new ModuleInput());

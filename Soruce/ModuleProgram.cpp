@@ -13,7 +13,6 @@ ModuleProgram::~ModuleProgram()
 
 bool ModuleProgram::Init()
 {
-	bool return_flag = true;
 
 	// Load shaders from files and compile them:
 	unsigned int vertex_shader_id = CompileShader(LoadShaderSource("vertex.glsl"), GL_VERTEX_SHADER);
@@ -22,7 +21,7 @@ bool ModuleProgram::Init()
 	program_id = CreateProgram(vertex_shader_id, fragment_shader_id);
 
 	// Use the created program:
-	glLinkProgram(program_id);
+
 	glUseProgram(program_id);
 
 	// Delete shaders since they are linked into the program and they are not needed anymore:
@@ -30,7 +29,7 @@ bool ModuleProgram::Init()
 	glDeleteShader(fragment_shader_id);
 
 
-	return return_flag;
+	return true;
 
 }
 
