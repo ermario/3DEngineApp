@@ -77,7 +77,7 @@ bool ModuleRenderExercise::Init()
     glGenBuffers(1, &vertex_buffer_object);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
     // size = 3 float per vertex
     // stride = 0 is equivalent to stride = sizeof(float)*3
     glEnableVertexAttribArray(0); // Shader
@@ -126,7 +126,7 @@ update_status ModuleRenderExercise::Update()
 	glBindVertexArray(vertex_buffer_object);
 
 	// 1 triangle to draw = 3 vertices 
-	glDrawArrays(GL_TRIANGLES, 0, 3*2);
+	glDrawArrays(GL_TRIANGLES, 0, 6*3*2);
 	
     return UPDATE_CONTINUE;
 }
