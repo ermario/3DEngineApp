@@ -180,6 +180,10 @@
     <ClCompile Include="ModuleTexture.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -474,6 +478,10 @@
     <ClInclude Include="ModuleTexture.h">
       <Filter>Modules</Filter>
     </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Modules">

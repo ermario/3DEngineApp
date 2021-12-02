@@ -43,6 +43,7 @@ enum update_status
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 720
 #define SCREEN_SIZE 2
+#define DEFAULT_SCREEN_RATIO 0.95f
 #define FULLSCREEN false
 #define RESIZABLE true
 #define VSYNC true
