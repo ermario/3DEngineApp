@@ -29,7 +29,6 @@ bool ModuleCamera::Init()
 	float4x4 projectionGL = frustum.ProjectionMatrix().Transposed();
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(*projectionGL.v);
-	
 
 	return true;
 }

@@ -8,18 +8,25 @@
 
 
 float cube_vertices[] = {
-    -1.0f, 1.0f, 0.0f, // Triangle 1
-     1.0f,-1.0f, 0.0f, 
-    -1.0f,-1.0f, 0.0f,
-    -1.0f, 1.0f, 0.0f, // Triangle 2
-     1.0f, 1.0f, 0.0f,
+     1.0f, 1.0f, 0.0f, // Triangle 1
      1.0f,-1.0f, 0.0f,
-     0.0f, 1.0f,       // Texture
-     1.0f, 1.0f,
+    -1.0f,-1.0f, 0.0f,
+    -1.0f,-1.0f, 0.0f, // Triangle 2
+    -1.0f, 1.0f, 0.0f,
+     1.0f, 1.0f, 0.0f,
+     1.0f, 1.0f,       // Texture T1
      1.0f, 0.0f,
-     0.0f, 0.0f
+     0.0f, 0.0f,
+     0.0f, 0.0f,       // Texture T2
+     0.0f, 1.0f,
+     1.0f, 1.0f
 };
 
+float vertices[] = {
+    -1.0f, -1.0f, 0.0f,
+     1.0f, -1.0f, 0.0f,
+     0.0f,  1.0f, 0.0f
+};
 
 static const GLfloat g_vertex_buffer_data[] = {
     -1.0f,-1.0f,-1.0f, // triángulo 1 : comienza
@@ -80,10 +87,6 @@ bool ModuleRenderExercise::Init()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(float) * 3 * 6)); //3 * 6 is the size of the vertices, buffer offset 
 
     glActiveTexture(GL_TEXTURE0);
-    Texture txtur = App->textures->CompileTexture("Textures/Baker_house.png");
-    glBindTexture(GL_TEXTURE_2D, App->textures->GetTexture(&txtur));
-    glUniform1i(glGetUniformLocation(App->shader_program->GetProgramId(), "mytexture"), 0);
-
 
 
 	return true;
@@ -99,20 +102,31 @@ bool ModuleRenderExercise::CleanUp()
 
 update_status ModuleRenderExercise::Update()
 {
-    float4x4 model(float4(5.0f, 0.0f, 0.0f, 0.0f), float4(0.0f, 5.0f, 0.0f, 0.0f), float4(0.0f, 0.0f, 5.0f, 0.0f), float4(0.0f, 0.0f, 0.0f, 1.0f));
+    float4x4 model(float4(5.0f, 0.0f, 0.0f, 0.0f), // MODEL SIZED x5
+                   float4(0.0f, 5.0f, 0.0f, 0.0f), 
+                   float4(0.0f, 0.0f, 5.0f, 0.0f), 
+                   float4(0.0f, 0.0f, 0.0f, 1.0f));
     unsigned int program_id = App->shader_program->GetProgramId();
     glUseProgram(program_id);
-    //MODEL
-    //model = float4x4::identity;
 
+    //MODEL
+    //float4x4 model = float4x4::identity;
 	glUniformMatrix4fv(glGetUniformLocation(program_id, "model"), 1, GL_TRUE, &model[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(program_id, "view"), 1, GL_TRUE, &App->camera->GetViewMatrix()[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(program_id, "proj"), 1, GL_TRUE, &App->camera->GetProjectionMatrix()[0][0]);
 
+    
+    //TEXTURE
+    Texture txtur = App->textures->CompileTexture("Textures/lena.jpg");
+    glBindTexture(GL_TEXTURE_2D, App->textures->GetTexture(&txtur));
+    glUniform1i(glGetUniformLocation(App->shader_program->GetProgramId(), "mytexture"), 0);
+
+    
 	// TODO: bind buffer and vertex attributes
-	//glBindVertexArray(vertex_buffer_object);
+	glBindVertexArray(vertex_buffer_object);
+
 	// 1 triangle to draw = 3 vertices 
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDrawArrays(GL_TRIANGLES, 0, 3*2);
 	
     return UPDATE_CONTINUE;
 }

@@ -32,13 +32,13 @@ Texture ModuleTexture::CompileTexture(const char* path)
 	if (texture_id != 0) {
 		glGenTextures(1, &texture.id);
 		glBindTexture(GL_TEXTURE_2D, texture.id);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.width_px = ilGetInteger(IL_IMAGE_WIDTH), texture.height_px = ilGetInteger(IL_IMAGE_HEIGHT), 0, GL_BGR, GL_UNSIGNED_BYTE, ilGetData());
+		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.width_px = ilGetInteger(IL_IMAGE_WIDTH), texture.height_px = ilGetInteger(IL_IMAGE_HEIGHT), 0, GL_BGR, GL_UNSIGNED_BYTE, ilGetData());
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-		//glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP), texture.width_px = ilGetInteger(IL_IMAGE_WIDTH),
-		//	texture.height_px = ilGetInteger(IL_IMAGE_HEIGHT), 0, ilGetInteger(IL_IMAGE_FORMAT), GL_UNSIGNED_BYTE,
-		//	ilGetData());
+		glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP), texture.width_px = ilGetInteger(IL_IMAGE_WIDTH),
+			texture.height_px = ilGetInteger(IL_IMAGE_HEIGHT), 0, ilGetInteger(IL_IMAGE_FORMAT), GL_UNSIGNED_BYTE,
+			ilGetData());
 
 		ilDeleteImages(1, &texture_id);
 		texture.is_loaded = true;
