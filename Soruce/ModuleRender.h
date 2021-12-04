@@ -1,7 +1,8 @@
 #pragma once
 #include "Module.h"
-#include "Globals.h"
+#include "Model.h"
 #include "GL/glew.h"
+
 
 struct SDL_Texture;
 struct SDL_Renderer;
@@ -20,6 +21,8 @@ public:
 	bool CleanUp();
 	void WindowResized(unsigned width, unsigned height);
 
-public:
 	void* context = NULL;
+
+private:
+	Model* model = nullptr;
 };

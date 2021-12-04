@@ -1,14 +1,30 @@
 #pragma once
+
+#include "Mesh.h"
+#include "ModuleTexture.h"
+
 #include "assimp/scene.h"
 
-class Model: public aiScene
+#include <vector>
+
+class Model
 {
 public:
 	Model();
 	~Model();
 
-	void Load(const char* file_name);
-	void LoadMaterials(const aiScene* scene);
+	void Draw();
+	void LoadModel(const char* file_name);
+	void CleanUp();
+
+private:
+	void LoadMeshes(const aiScene* scene);
+	void LoadTextures(const aiScene* scene);
+
+	std::vector<Texture> textures;
+	std::vector<Mesh> meshes;
+
+	bool model_loaded = false;
 
 };
 

@@ -1,11 +1,13 @@
 #include "Globals.h"
+
 #include "Application.h"
-#include "SDL.h"
 #include "ModuleRender.h"
 #include "ModuleProgram.h"
 #include "ModuleWindow.h"
 #include "ModuleCamera.h"
 #include "ModuleDebugDraw.h"
+
+#include "SDL.h"
 
 
 ModuleRender::ModuleRender()
@@ -51,7 +53,8 @@ bool ModuleRender::Init()
 
 	//INIT TEXTURES
 
-
+	model = new Model();
+	model->LoadModel("BakerHouse.fbx");
 
 	return true;
 }
@@ -75,6 +78,11 @@ update_status ModuleRender::Update()
 	glUseProgram(App->shader_program->GetProgramId());
 	auto& size = App->window->screen_surface;
 	App->grid->Draw(App->camera->GetViewMatrix(), App->camera->GetProjectionMatrix(), size->w, size->h);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	model->Draw();
+
 	return UPDATE_CONTINUE;
 }
 

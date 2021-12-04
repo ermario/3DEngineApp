@@ -183,7 +183,9 @@
     <ClCompile Include="Model.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -481,7 +483,9 @@
     <ClInclude Include="Model.h">
       <Filter>Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Mesh.h">
+      <Filter>Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Modules">
