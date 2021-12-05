@@ -40,8 +40,8 @@ public:
 private:
 
 	std::list<Module*> modules;
-	uint32_t delta_time = 0;
-	uint32_t ticks_count = 0;
+	double delta_time = 0;
+	double ticks_count = 0;
 
 };
 

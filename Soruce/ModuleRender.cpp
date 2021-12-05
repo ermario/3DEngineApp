@@ -66,7 +66,7 @@ update_status ModuleRender::PreUpdate()
 	SDL_GetWindowSize(App->window->window, &width, &height); //update de width and height with the window size
 	glViewport(0, 0, width, height); // set the view port
 
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // specify clear values for the color buffers - RGBAlpha
+	glClearColor(0.10f, 0.10f, 0.10f, 1.0f); // specify clear values for the color buffers - RGBAlpha
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear buffers to preset values (from above)
 
 	return UPDATE_CONTINUE;

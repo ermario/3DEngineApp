@@ -50,7 +50,7 @@ bool Application::Init()
 update_status Application::Update()
 {
 	uint32_t current_tick = SDL_GetTicks();
-	delta_time = current_tick - ticks_count;
+	delta_time = (current_tick - ticks_count);
 	ticks_count = current_tick;
 
 	update_status ret = UPDATE_CONTINUE;

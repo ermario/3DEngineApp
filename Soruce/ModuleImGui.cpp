@@ -72,6 +72,15 @@ update_status ModuleImGui::PreUpdate()
 	if (inspector_tab)
 		InspectorSidebar();
 
+	if (exit_popup)
+	{
+		bool exit = ExitPopup();
+		if(exit) 
+		{ 
+			return UPDATE_STOP; 
+		}
+	}
+
 
 	return UPDATE_CONTINUE;
 }
@@ -102,6 +111,8 @@ void ModuleImGui::Menu() {
 		if (ImGui::BeginMenu("File")) {
 			ImGui::MenuItem("Save");
 			ImGui::MenuItem("Load");
+			if (ImGui::MenuItem("Quit"))
+				exit_popup = true;
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Edit")) {
@@ -179,4 +190,40 @@ void ModuleImGui::About() {
 	ImGui::Text("VRAM: %.1f Mb", vram_total);
 	ImGui::Text("Vram Usage:  %.1f Mb", vram_usage);
 	ImGui::Text("Vram Available:  %.1f Mb", vram_free);
+}
+
+bool ModuleImGui::ExitPopup()
+{
+	bool exit = false;
+	ImGui::OpenPopup("Exit?");
+
+	// Always center this window when appearing
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	if (ImGui::BeginPopupModal("Exit?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		ImGui::Text("You are about to exit the Engine.\nUnsaved work will be lost!\n\n");
+		ImGui::Separator();
+
+		static bool dont_ask_me_next_time = false;
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+		ImGui::Checkbox("Don't ask me next time", &dont_ask_me_next_time);
+		ImGui::PopStyleVar();
+
+		if (ImGui::Button("OK", ImVec2(120, 0))) 
+		{ 
+			ImGui::CloseCurrentPopup(); 
+			exit_popup = false;
+			exit = true;
+		}
+		ImGui::SetItemDefaultFocus();
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel", ImVec2(120, 0))) 
+		{ 
+			ImGui::CloseCurrentPopup();
+			exit_popup = false;
+		}
+		ImGui::EndPopup();
+	}
+	return exit;
 }

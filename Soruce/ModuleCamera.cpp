@@ -32,6 +32,10 @@ bool ModuleCamera::Init()
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(*projectionGL.v);
 
+	//INIT class variables for camera control and info
+	camera_position = frustum.Pos();
+	camera_pitch = frustum.Up();
+	camera_yaw = frustum.Front();
 	return true;
 }
 
@@ -43,22 +47,21 @@ bool ModuleCamera::Clear()
 update_status ModuleCamera::Update()
 {
 	CameraMovement();
+	SetCamera();
 
 	//Send the frustum view matrix to OpenGL
-	// direct mode would be:
 	float4x4 viewGL = float4x4(frustum.ViewMatrix()).Transposed();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(*viewGL.v);
-
 
 	return UPDATE_CONTINUE;
 }
 
 void ModuleCamera::CameraMovement()
 {
-	float movement_speed = 0.01f;
+	float movement_speed = 15.0f / 1000.f;
 	float rotation_speed = 0.001f;
-	uint32_t delta = App->GetDeltaTime();
+	double delta = App->GetDeltaTime();
 
 	// PRESS SHIFT TO INCRESE SPEED OF MOVEMENT
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT))
@@ -71,80 +74,30 @@ void ModuleCamera::CameraMovement()
 	float new_pos = movement_speed * delta;
 	float new_angle = rotation_speed * delta;
 
-	//ABSOLUTE UP -> Q
-	if (App->input->GetKey(SDL_SCANCODE_Q))
-	{
-		vec oldPos = frustum.Pos();
-		frustum.SetPos(oldPos.Add(float3(0.0f, new_pos, 0.0f)));
-	}
-	//ABSOLUTE DOWN -> E
-	if (App->input->GetKey(SDL_SCANCODE_E))
-	{
-		vec oldPos = frustum.Pos();
-		frustum.SetPos(oldPos.Add(float3(0.0f, -new_pos, 0.0f)));
-	}
-	//ABSOLUTE FRONT -> W
-	if (App->input->GetKey(SDL_SCANCODE_W))
-	{
-		vec oldPos = frustum.Pos();
-		frustum.SetPos(oldPos.Add(frustum.Front()*new_pos));
-	}
-	//ABSOLUTE BACK -> S
-	if (App->input->GetKey(SDL_SCANCODE_S))
-	{
-		vec oldPos = frustum.Pos();
-		frustum.SetPos(oldPos.Sub(frustum.Front() * new_pos));
-	}
+	
+	if (App->input->GetKey(SDL_SCANCODE_Q)) //ABSOLUTE UP -> Q
+		camera_position += float3(0.0f, new_pos, 0.0f);
+	if (App->input->GetKey(SDL_SCANCODE_E)) //ABSOLUTE DOWN -> E
+		camera_position -= float3(0.0f, new_pos, 0.0f);
+	if (App->input->GetKey(SDL_SCANCODE_W))	//ABSOLUTE FRONT -> W
+		camera_position += frustum.Front() * new_pos;
+	if (App->input->GetKey(SDL_SCANCODE_S)) //ABSOLUTE BACK -> S
+		camera_position -= frustum.Front() * new_pos; 
+	if (App->input->GetKey(SDL_SCANCODE_A))	//ABSOLUTE LEFT -> A
+		camera_position -= frustum.WorldRight() * new_pos;
+	if (App->input->GetKey(SDL_SCANCODE_D))	//ABSOLUTE RIGHT -> D
+		camera_position += frustum.WorldRight() * new_pos;
 
-	//ABSOLUTE LEFT -> A
-	if (App->input->GetKey(SDL_SCANCODE_A))
-	{
-		vec oldPos = frustum.Pos();
-		frustum.SetPos(oldPos.Sub(frustum.WorldRight() * new_pos));
-	}
-
-	//ABSOLUTE RIGHT -> D
-	if (App->input->GetKey(SDL_SCANCODE_D))
-	{
-		vec oldPos = frustum.Pos();
-		frustum.SetPos(oldPos.Add(frustum.WorldRight() * new_pos));
-	}
 	if (!camera_locked) {
-		//ROTATE LEFT
-		if (App->input->GetKey(SDL_SCANCODE_LEFT))
-		{
+		if (App->input->GetKey(SDL_SCANCODE_LEFT)) //ROTATE LEFT
+			CameraRotation(new_angle, 0.0f, 0.0f);
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT)) //ROTATE RIGHT
+			CameraRotation(-new_angle, 0.0f, 0.0f);
+		if (App->input->GetKey(SDL_SCANCODE_UP)) //ROTATE UP
+			CameraRotation(0.0f, new_angle, 0.0f);
+		if (App->input->GetKey(SDL_SCANCODE_DOWN)) //ROTATE DOWN
+			CameraRotation(0.0f, -new_angle, 0.0f);
 
-			Quat rot = Quat::RotateY(new_angle);
-			frustum.SetFront(rot.Mul(frustum.Front()).Normalized());
-			frustum.SetUp(rot.Mul(frustum.Up()).Normalized());
-		}
-
-		//ROTATE RIGHT
-		if (App->input->GetKey(SDL_SCANCODE_RIGHT))
-		{
-			Quat rotation_vector = Quat::RotateY(-new_angle);
-			frustum.SetFront(rotation_vector.Mul(frustum.Front()).Normalized());
-			frustum.SetUp(rotation_vector.Mul(frustum.Up()).Normalized());
-		}
-
-		//ROTATE UP
-		if (App->input->GetKey(SDL_SCANCODE_UP))
-		{
-			Quat rotation_vector = Quat::RotateAxisAngle(frustum.WorldRight(), new_angle);
-			frustum.SetUp(rotation_vector.Mul(frustum.Up()).Normalized());
-			frustum.SetFront(rotation_vector.Mul(frustum.Front()).Normalized());
-		}
-
-		//ROTATE DOWN
-		if (App->input->GetKey(SDL_SCANCODE_DOWN))
-		{
-			float3x3 rotation_vector = float3x3::RotateAxisAngle(frustum.WorldRight(), -new_angle);
-			vec oldUp = frustum.Up().Normalized();
-			vec oldFront = frustum.Front().Normalized();
-			frustum.SetUp(rotation_vector.MulDir(oldUp));
-			frustum.SetFront(rotation_vector.MulDir(oldFront));
-
-		}
 		if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN) 
 		{
 			frustum.SetPos(float3(0.0f, 10.0f, 0.0f));
@@ -152,25 +105,49 @@ void ModuleCamera::CameraMovement()
 			frustum.SetFront(float3(0.0f, -1.0f, 0.0f));
 		}
 	}
-	
+
+}
+
+void ModuleCamera::SetCamera()
+{
+	frustum.SetPos(camera_position);
+	frustum.SetFront(camera_yaw);
+	frustum.SetUp(camera_pitch);
+
+}
+
+void ModuleCamera::CameraRotation(float yaw, float pitch, float roll)
+{
+	if (yaw != 0.0f)
+	{
+		Quat rotation_vector = Quat::RotateY(yaw);
+		camera_yaw = rotation_vector.Mul(frustum.Front()).Normalized();
+		camera_pitch = rotation_vector.Mul(frustum.Up()).Normalized();
+	}
+	if(pitch != 0.0f)
+	{
+		Quat rotation_vector = Quat::RotateAxisAngle(frustum.WorldRight(), pitch);
+		camera_yaw = rotation_vector.Mul(frustum.Front()).Normalized();
+		camera_pitch = rotation_vector.Mul(frustum.Up()).Normalized();
+	}
+
+	if(roll != 0.0f)
+	{
+		//TODO
+	}
 }
 
 void ModuleCamera::ImGuiCamera()
 {
-	camera_position = frustum.Pos();
-	float3 camera_direction = frustum.Front();
-	float3 camera_inclination = frustum.Up();
 	ImGui::Separator;
 	ImGui::Text("Camera Position");
 	ImGui::SliderFloat3("pX, pY, pZ", &camera_position[0], -10.0f, 10.0f, "%.3f", 1.0f);
 	ImGui::Separator;
 	ImGui::Text("Camera Direction");
-	ImGui::SliderFloat3("dX, dY, dZ", &camera_direction[0], -10.0f, 10.0f, "%.3f", 1.0f);
+	ImGui::InputFloat3("dX, dY, dZ", &camera_pitch[0]);
 	ImGui::Separator;
 	ImGui::Text("Camera Inclination");
-	ImGui::SliderFloat3("iX, iY, iZ", &camera_inclination[0], -10.0f, 10.0f, "%.3f", 1.0f);
-
-
+	ImGui::InputFloat3("iX, iY, iZ", &camera_yaw[0]);
 	ImGui::Checkbox("Lock Model", &camera_locked);
 	if (camera_locked) {
 		ImGui::SameLine();

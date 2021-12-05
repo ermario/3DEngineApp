@@ -35,12 +35,14 @@ public:
 	void InspectorSidebar();
 	void Performance();
 	void About();
+	bool ExitPopup();
 
 private:
 	bool demo_tab = false;
 	bool console_tab = false;
 	bool about_tab = false;
 	bool inspector_tab = true;
+	bool exit_popup = false;
 	AboutInfo about;
 };
 
