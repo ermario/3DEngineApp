@@ -30,8 +30,10 @@ void Model::Draw()
 
 void Model::LoadModel(const char* file_name)
 {
-	EngineLOG("------ LOADING MODEL ------")
+	if (model_loaded) // Delete previous model
+		CleanUp();
 
+	EngineLOG("------ LOADING MODEL ------")
 	const aiScene* scene = aiImportFile(file_name, aiProcess_Triangulate); //aiProcess_Triangulate fixes EBO with multiple meshes
 	if (scene)
 	{
@@ -48,6 +50,20 @@ void Model::LoadModel(const char* file_name)
 
 void Model::CleanUp()
 {
+	//Clear Meshes
+	for (Mesh& mesh : meshes) {
+		mesh.CleanUp();
+	}
+	meshes.clear();
+
+	//Clear Textures
+	for (Texture texture : textures) {
+		glDeleteTextures(1, &texture.id);
+	}
+	textures.clear();
+
+	model_loaded = false;
+	EngineLOG("------ MODEL UNLOADED ------");
 }
 
 void Model::LoadMeshes(const aiScene* scene)

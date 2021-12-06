@@ -5,7 +5,7 @@
 
 #define EngineLOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
 #define BROWSER(url) OpenBrowser(url);
-#define DEGTORAD .0174533f
+
 
 void log(const char file[], int line, const char* format, ...);
 
@@ -52,7 +52,12 @@ enum update_status
 
 
 //CONSTANTS
-#define MILI_TO_SECONDS = 1000.0f
+#define MILI_TO_SECONDS 1000.0f
+#define DEGTORAD .0174533f
+
+
+//SDL EVENTS
+#define SDL_MOUSE_BUTTON_RIGHT 3
 
 // Files -----------
 #define SHADER_VERTEX_FILEPATH "vertex.glsl"

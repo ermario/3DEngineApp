@@ -56,17 +56,24 @@ public:
 		return mouse_buttons[id - 1];
 	}
 
+	void GetMouseMovement(int& mov_x, int& mov_y) const;
+	int GetWheelMovement() const { return scroll_mov; }
+	void ResetMouseValues() { mouse_mov_x = mouse_mov_y = scroll_mov = 0.0f; }
+
 	// Check for window events last frame
 	bool GetWindowEvent(EventWindow code) const;
 
-	// Get mouse / axis position
+	bool is_escape = false;
+	bool drag_model = false; // TODO: POP UP FOR
 
 
 private:
-	bool		windowEvents[WE_COUNT];
+	bool windowEvents[WE_COUNT];
 	KeyState* keyboard;
-	KeyState	mouse_buttons[NUM_MOUSE_BUTTONS];
-
+	KeyState mouse_buttons[NUM_MOUSE_BUTTONS];
+	int mouse_mov_x = 0;
+	int mouse_mov_y = 0;
+	int scroll_mov = 0;
 };
 
 #endif // __MODULEINPUT_H__

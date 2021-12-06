@@ -22,7 +22,7 @@ public:
 	void WindowResized(unsigned width, unsigned height);
 
 	void* context = NULL;
-
-private:
 	Model* model = nullptr;
+private:
+	
 };

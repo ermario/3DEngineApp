@@ -1,6 +1,8 @@
 #include "Globals.h"
+
 #include "Application.h"
 #include "ModuleInput.h"
+#include "ModuleRender.h"
 #include "SDL/include/SDL.h"
 
 #define MAX_KEYS 300
@@ -44,7 +46,7 @@ bool ModuleInput::Start()
 update_status ModuleInput::PreUpdate()
 {
 	static SDL_Event event;
-
+	ResetMouseValues();
 	memset(windowEvents, false, WE_COUNT * sizeof(bool));
 
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
@@ -111,6 +113,19 @@ update_status ModuleInput::PreUpdate()
 		case SDL_MOUSEBUTTONUP:
 			mouse_buttons[event.button.button - 1] = KEY_UP;
 			break;
+
+		case SDL_MOUSEMOTION:
+			mouse_mov_x = event.motion.xrel;
+			mouse_mov_y = event.motion.yrel;
+			break;
+		case SDL_MOUSEWHEEL:
+			scroll_mov = event.wheel.y;
+			break;
+		case SDL_DROPFILE:
+			// TODO: should be freed with SDL_free()
+			drag_model = true;
+			App->renderer->model->LoadModel(event.drop.file);
+			break;
 		}
 	}
 
@@ -126,6 +141,12 @@ bool ModuleInput::CleanUp()
 	EngineLOG("Quitting SDL event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	return true;
+}
+
+void ModuleInput::GetMouseMovement(int& mov_x, int& mov_y) const
+{
+	mov_x = mouse_mov_x;
+	mov_y = mouse_mov_y;
 }
 
 // ---------

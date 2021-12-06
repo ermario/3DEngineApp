@@ -3,6 +3,7 @@
 #include "ModuleCamera.h"
 #include "Application.h"
 #include "ModuleInput.h"
+#include "ModuleWindow.h"
 
 #include "MathGeoLib.h"
 #include "GL/glew.h"
@@ -20,10 +21,12 @@ ModuleCamera::~ModuleCamera()
 
 bool ModuleCamera::Init()
 {
+	aspect_ratio = (float(App->window->screen_surface->w) / float(App->window->screen_surface->h));
+	horizontal_fov = 90.0f * DEGTORAD;
 	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
 	frustum.SetViewPlaneDistances(0.1f, 100.0f);
-	frustum.SetHorizontalFovAndAspectRatio(DEGTORAD * 90.0f, float(SCREEN_WIDTH)/float(SCREEN_HEIGHT));
-	frustum.SetPos(float3(0.0f, 5.0f, -5.0f));
+	frustum.SetHorizontalFovAndAspectRatio(horizontal_fov, aspect_ratio);
+	frustum.SetPos(float3(0.0f, 5.0f, -10.0f));
 	float3x3 world_rotation = float3x3::identity;
 	frustum.SetFront(world_rotation.WorldZ());
 	frustum.SetUp(world_rotation.WorldY());
@@ -47,7 +50,7 @@ bool ModuleCamera::Clear()
 update_status ModuleCamera::Update()
 {
 	CameraMovement();
-	SetCamera();
+	SetCameraPosition();
 
 	//Send the frustum view matrix to OpenGL
 	float4x4 viewGL = float4x4(frustum.ViewMatrix()).Transposed();
@@ -59,34 +62,72 @@ update_status ModuleCamera::Update()
 
 void ModuleCamera::CameraMovement()
 {
-	float movement_speed = 15.0f / 1000.f;
-	float rotation_speed = 0.001f;
+	float movement_speed = 15.0f / MILI_TO_SECONDS;
+	float rotation_speed = 1.5f / MILI_TO_SECONDS;
+	float zoom_speed = 5.0f;
 	double delta = App->GetDeltaTime();
 
-	// PRESS SHIFT TO INCRESE SPEED OF MOVEMENT
+	const float zoom_min = 90.0f * DEGTORAD;
+	const float zoom_max = 45.0f * DEGTORAD;
+
+	// PRESS SHIFT TO INCRESE SPEED OF MOVEMENT x2
 	if (App->input->GetKey(SDL_SCANCODE_LSHIFT))
 	{
 		movement_speed = movement_speed * 2;
 		rotation_speed = rotation_speed * 2;
-		EngineLOG("SHIFT %f and %f speed",movement_speed,rotation_speed);
+		zoom_speed = zoom_speed * 2;
 	}
 
 	float new_pos = movement_speed * delta;
 	float new_angle = rotation_speed * delta;
 
+	if(App->input->GetMouseButtonDown(SDL_MOUSE_BUTTON_RIGHT))
+	{
+		int mouse_x = 0;
+		int mouse_y = 0;
+		App->input->GetMouseMovement(mouse_x, mouse_y);
+		
+		//FIRST PERSON CAMERA MOVEMENT
+		
+		if (App->input->GetKey(SDL_SCANCODE_W))	//ABSOLUTE FRONT -> W
+			camera_position += frustum.Front() * new_pos;
+		if (App->input->GetKey(SDL_SCANCODE_S)) //ABSOLUTE BACK -> S
+			camera_position -= frustum.Front() * new_pos;
+		if (App->input->GetKey(SDL_SCANCODE_A))	//ABSOLUTE LEFT -> A
+			camera_position -= frustum.WorldRight() * new_pos;
+		if (App->input->GetKey(SDL_SCANCODE_D))	//ABSOLUTE RIGHT -> D
+			camera_position += frustum.WorldRight() * new_pos;
+
+		EngineLOG("MOUSE_X: %f ---- MOUSE_Y: %f", mouse_x, mouse_y);
+		// FREE LOOK AROUND ROTATIONS USING MOUSE 
+		if (mouse_x != 0 || mouse_y != 0)
+		{
+			EngineLOG("MOUSE_X: %f ---- MOUSE_Y: %f", mouse_x, mouse_y);
+			CameraRotation(-mouse_x * new_angle, -mouse_y * new_angle, 0.0f);
+		}
+	}
 	
+	// ABSOLUTE UP AND DOWN CAMERA MOVEMENT
+
 	if (App->input->GetKey(SDL_SCANCODE_Q)) //ABSOLUTE UP -> Q
 		camera_position += float3(0.0f, new_pos, 0.0f);
 	if (App->input->GetKey(SDL_SCANCODE_E)) //ABSOLUTE DOWN -> E
 		camera_position -= float3(0.0f, new_pos, 0.0f);
-	if (App->input->GetKey(SDL_SCANCODE_W))	//ABSOLUTE FRONT -> W
-		camera_position += frustum.Front() * new_pos;
-	if (App->input->GetKey(SDL_SCANCODE_S)) //ABSOLUTE BACK -> S
-		camera_position -= frustum.Front() * new_pos; 
-	if (App->input->GetKey(SDL_SCANCODE_A))	//ABSOLUTE LEFT -> A
-		camera_position -= frustum.WorldRight() * new_pos;
-	if (App->input->GetKey(SDL_SCANCODE_D))	//ABSOLUTE RIGHT -> D
-		camera_position += frustum.WorldRight() * new_pos;
+
+	// CAMERA ZOOM 
+	int mouse_scroll = App->input->GetWheelMovement();
+	if (mouse_scroll != 0)
+	{
+		horizontal_fov -= mouse_scroll * DEGTORAD * zoom_speed;
+		if (horizontal_fov < zoom_max)
+			horizontal_fov = zoom_max;
+		if (horizontal_fov > zoom_min)
+			horizontal_fov = zoom_min;
+		frustum.SetHorizontalFovAndAspectRatio(horizontal_fov, aspect_ratio);
+	}
+
+
+	// CAMERA ROTATION USING ARROWS
 
 	if (!camera_locked) {
 		if (App->input->GetKey(SDL_SCANCODE_LEFT)) //ROTATE LEFT
@@ -108,11 +149,10 @@ void ModuleCamera::CameraMovement()
 
 }
 
-void ModuleCamera::SetCamera()
+void ModuleCamera::SetCameraPosition()
 {
 	frustum.SetPos(camera_position);
-	frustum.SetFront(camera_yaw);
-	frustum.SetUp(camera_pitch);
+
 
 }
 
@@ -123,12 +163,16 @@ void ModuleCamera::CameraRotation(float yaw, float pitch, float roll)
 		Quat rotation_vector = Quat::RotateY(yaw);
 		camera_yaw = rotation_vector.Mul(frustum.Front()).Normalized();
 		camera_pitch = rotation_vector.Mul(frustum.Up()).Normalized();
+		frustum.SetFront(camera_yaw);
+		frustum.SetUp(camera_pitch);
 	}
 	if(pitch != 0.0f)
 	{
 		Quat rotation_vector = Quat::RotateAxisAngle(frustum.WorldRight(), pitch);
 		camera_yaw = rotation_vector.Mul(frustum.Front()).Normalized();
 		camera_pitch = rotation_vector.Mul(frustum.Up()).Normalized();
+		frustum.SetFront(camera_yaw);
+		frustum.SetUp(camera_pitch);
 	}
 
 	if(roll != 0.0f)

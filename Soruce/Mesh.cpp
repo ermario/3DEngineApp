@@ -57,7 +57,7 @@ void Mesh::Draw(const std::vector<Texture>& model_textures)
 
 		glEnable(GL_TEXTURE_2D);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, model_textures[material_index].id);
+		glBindTexture(GL_TEXTURE_2D, model_textures[material_index].id); // ERROR ON LOADING OTHER MODEL (INDEX OUT OF RANGE)
 
 		glUniform1i(glGetUniformLocation(program_id, "diffuse"), 0);
 		glBindVertexArray(VAO);
