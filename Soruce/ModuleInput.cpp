@@ -122,7 +122,6 @@ update_status ModuleInput::PreUpdate()
 			scroll_mov = event.wheel.y;
 			break;
 		case SDL_DROPFILE:
-			// TODO: should be freed with SDL_free()
 			drag_model = true;
 			App->renderer->model->LoadModel(event.drop.file);
 			break;
@@ -130,7 +129,7 @@ update_status ModuleInput::PreUpdate()
 	}
 
 	if (GetWindowEvent(EventWindow::WE_QUIT) == true || GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
-		return UPDATE_STOP;
+		return UPDATE_STOP; // TODO: Make a broadcast function to send the event to other modules 
 
 	return UPDATE_CONTINUE;
 }

@@ -54,7 +54,7 @@ bool ModuleRender::Init()
 	//INIT TEXTURES
 
 	model = new Model();
-	model->LoadModel("BakerHouse.fbx");
+	model->LoadModel("Resources/BakerHouse.fbx");
 
 	return true;
 }

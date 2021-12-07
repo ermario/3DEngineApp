@@ -48,7 +48,7 @@ bool ModuleImGui::Init()
 	glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &about.vram_capacity);
 	glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &about.vram_free);
 	SDL_GetVersion(&about.sdl_version);
-	//demo_tab = true;
+
 	return true;
 }
 
@@ -60,8 +60,8 @@ update_status ModuleImGui::PreUpdate()
 
 	Menu();
 
-	//if (console_tab) 
-		//Logger->Draw(&show_console);
+	if (console_tab) 
+		//debugger->Draw(&console_tab);
 
 	if (demo_tab)
 		ImGui::ShowDemoWindow(&demo_tab);

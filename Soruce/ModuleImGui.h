@@ -30,6 +30,7 @@ public:
 	update_status PreUpdate() override;
 	update_status Update() override;
 	bool CleanUp() override;
+	//Console* debugger = NULL;
 
 	void Menu();
 	void InspectorSidebar();

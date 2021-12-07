@@ -486,6 +486,9 @@
     <ClInclude Include="Mesh.h">
       <Filter>Modules</Filter>
     </ClInclude>
+    <ClInclude Include="Console.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Modules">

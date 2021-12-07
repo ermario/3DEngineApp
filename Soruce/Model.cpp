@@ -95,26 +95,38 @@ void Model::LoadTextures(const aiScene* scene)
 {
 	EngineLOG("1- Loading Textures: %d", scene->mNumMaterials);
 	aiString file;
+
 	textures.reserve(scene->mNumMaterials);
 	for (unsigned i = 0; i < scene->mNumMaterials; ++i)
 	{
 		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
 		{
+			std::string texture_path = file.data;
+			std::string folder_path = texture_path.substr(0, texture_path.find_last_of("/\\")+1);
+			std::string default_path = "Resources/Textures/\\";
 			Texture aux_texture;
-			aux_texture = App->textures->CompileTexture(file.data);
-
+			aux_texture = App->textures->CompileTexture(file.data); // a) First check on the path described in the FBX
 			if (!aux_texture.is_loaded)
 			{
-				EngineLOG("ERR: Failed loading texture: %s --- %s", file.data, aiGetErrorString());
-				//TODO PATH HIERARCHY CONTROL
-				// a) First check on the path described in the FBX
-				// b) Then check on the same folder you loaded the FBX
-				// c) Last, try in your own “Textures/” folder
+				EngineLOG("ERR: Failed loading texture: %s from model", texture_path.c_str());
+				aux_texture = App->textures->CompileTexture((folder_path + texture_path).c_str()); // b) Then check on the same folder you loaded the FBX
+				
+				if (!aux_texture.is_loaded)
+				{
+					EngineLOG("ERR: Failed loading texture: %s from folder: %s ", texture_path.c_str(), folder_path.c_str());
+					aux_texture = App->textures->CompileTexture((default_path + texture_path).c_str()); // c) Last, try in your own “Textures/” folder
+					
+					if (!aux_texture.is_loaded)
+						EngineLOG("ERR: Failed loading texture: %s from default folder: %s", texture_path.c_str(), default_path.c_str());
+				}
+				
+				
 			}
-			else
-			{
+
+			if (aux_texture.is_loaded)
 				textures.push_back(aux_texture);
-			}
+			else
+				EngineLOG("ERR: Texture: %s can not be found", texture_path.c_str())
 		}
 	}
 }

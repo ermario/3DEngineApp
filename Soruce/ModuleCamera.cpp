@@ -99,7 +99,6 @@ void ModuleCamera::CameraMovement()
 		if (App->input->GetKey(SDL_SCANCODE_D))	//ABSOLUTE RIGHT -> D
 			camera_position += frustum.WorldRight() * new_pos;
 
-		EngineLOG("MOUSE_X: %f ---- MOUSE_Y: %f", mouse_x, mouse_y);
 
 		if (App->input->GetKey(SDL_SCANCODE_LALT))
 		{
@@ -109,10 +108,7 @@ void ModuleCamera::CameraMovement()
 		{
 			// FREE LOOK AROUND ROTATIONS USING MOUSE 
 			if (mouse_x != 0 || mouse_y != 0)
-			{
-				EngineLOG("MOUSE_X: %f ---- MOUSE_Y: %f", mouse_x, mouse_y);
 				CameraRotation(-mouse_x * new_angle, -mouse_y * new_angle, 0.0f);
-			}
 		}
 		
 	}
