@@ -66,6 +66,12 @@ void Model::CleanUp()
 	EngineLOG("------ MODEL UNLOADED ------");
 }
 
+const float3 Model::GetModelPos() const
+{
+	float3 test = model_matrix.TranslatePart();
+	return test;
+}
+
 void Model::LoadMeshes(const aiScene* scene)
 {
 	textures.reserve(scene->mNumMeshes);

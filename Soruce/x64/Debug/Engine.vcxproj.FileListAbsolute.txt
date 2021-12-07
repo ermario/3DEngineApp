@@ -3,3 +3,5 @@ C:\Users\MariusSergiuDambeanP\source\repos\ermario\3DEngineApp\Soruce\x64\Debug\
 C:\Users\mariusdp\source\repos\ermario\3DEngineApp\Soruce\x64\Debug\Engine.exe
 F:\MARIUS\STUDIES\UPC\C++ for Videogames\3DEngine\Soruce\x64\Debug\Engine.exe
 C:\Users\Andrea\source\repos\ermario\3DEngineApp\Soruce\x64\Debug\Engine.exe
+C:\Users\Marius\source\repos\ermario\3DEngineApp\Soruce\x64\Debug\Engine.exe
+C:\Users\Marius\source\repos\ermario\3DEngineApp\Soruce\x64\Debug\Engine.pdb

@@ -16,6 +16,8 @@ public:
 	void CameraMovement();
 	void CameraRotation(float yaw, float pitch, float roll);
 	void SetCameraPosition();
+	void LookAtTarget(const float3 target);
+	void Orbit(float direction, float direction_y);
 
 	float4x4 GetViewMatrix() const { return float4x4(frustum.ViewMatrix()); };
 	float4x4 GetViewMatrixTransposed() const { return float4x4(frustum.ViewMatrix()).Transposed(); };
@@ -30,6 +32,7 @@ private:
 	float3 camera_pitch;
 	float3 camera_yaw;
 	bool camera_locked = false;
+	bool on_orbit = false;
 	float aspect_ratio = 0.0f;
 	float horizontal_fov = 0.0f;
 };

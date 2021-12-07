@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "ModuleWindow.h"
+#include "ModuleRender.h"
 
 #include "MathGeoLib.h"
 #include "GL/glew.h"
@@ -99,12 +100,21 @@ void ModuleCamera::CameraMovement()
 			camera_position += frustum.WorldRight() * new_pos;
 
 		EngineLOG("MOUSE_X: %f ---- MOUSE_Y: %f", mouse_x, mouse_y);
-		// FREE LOOK AROUND ROTATIONS USING MOUSE 
-		if (mouse_x != 0 || mouse_y != 0)
+
+		if (App->input->GetKey(SDL_SCANCODE_LALT))
 		{
-			EngineLOG("MOUSE_X: %f ---- MOUSE_Y: %f", mouse_x, mouse_y);
-			CameraRotation(-mouse_x * new_angle, -mouse_y * new_angle, 0.0f);
+			Orbit(mouse_x, mouse_y);
 		}
+		else
+		{
+			// FREE LOOK AROUND ROTATIONS USING MOUSE 
+			if (mouse_x != 0 || mouse_y != 0)
+			{
+				EngineLOG("MOUSE_X: %f ---- MOUSE_Y: %f", mouse_x, mouse_y);
+				CameraRotation(-mouse_x * new_angle, -mouse_y * new_angle, 0.0f);
+			}
+		}
+		
 	}
 	
 	// ABSOLUTE UP AND DOWN CAMERA MOVEMENT
@@ -139,11 +149,9 @@ void ModuleCamera::CameraMovement()
 		if (App->input->GetKey(SDL_SCANCODE_DOWN)) //ROTATE DOWN
 			CameraRotation(0.0f, -new_angle, 0.0f);
 
-		if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN) 
+		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN) 
 		{
-			frustum.SetPos(float3(0.0f, 10.0f, 0.0f));
-			frustum.SetUp(float3(0.0f, 0.0f, 1.0f));
-			frustum.SetFront(float3(0.0f, -1.0f, 0.0f));
+			LookAtTarget(App->renderer->model->GetModelPos());
 		}
 	}
 
@@ -152,7 +160,11 @@ void ModuleCamera::CameraMovement()
 void ModuleCamera::SetCameraPosition()
 {
 	frustum.SetPos(camera_position);
-
+	if (on_orbit)
+	{
+		LookAtTarget(App->renderer->model->GetModelPos());
+		on_orbit = false;
+	}
 
 }
 
@@ -179,6 +191,30 @@ void ModuleCamera::CameraRotation(float yaw, float pitch, float roll)
 	{
 		//TODO
 	}
+}
+
+void ModuleCamera::LookAtTarget(const float3 target)
+{
+	float3 test(0.0f, 0.0f, 0.0f);
+	float3 dir = test - frustum.Pos();
+
+	float3x3 m = float3x3::LookAt(frustum.Front(), dir.Normalized(), frustum.Up(), float3::unitY);
+
+	frustum.SetFront(m.MulDir(frustum.Front()).Normalized());
+	frustum.SetUp(m.MulDir(frustum.Up()).Normalized());
+}
+
+void ModuleCamera::Orbit(float direction_x, float direction_y)
+{
+	if (direction_x != 0.0f)
+	{
+		camera_position += frustum.WorldRight() * direction_x;
+	}
+	if (direction_y != 0.0f)
+	{
+		camera_position += float3(0.0f, direction_y, 0.0f);
+	}
+	on_orbit = true;
 }
 
 void ModuleCamera::ImGuiCamera()
