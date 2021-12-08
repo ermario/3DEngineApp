@@ -18,8 +18,8 @@ bool ModuleProgram::Init()
 {
 
 	// Load shaders from files and compile them:
-	unsigned int vertex_shader_id = CompileShader(LoadShaderSource("vertex.glsl"), GL_VERTEX_SHADER);
-	unsigned int fragment_shader_id = CompileShader(LoadShaderSource("fragment.glsl"), GL_FRAGMENT_SHADER);
+	unsigned int vertex_shader_id = CompileShader(LoadShaderSource(SHADER_VERTEX_FILEPATH), GL_VERTEX_SHADER);
+	unsigned int fragment_shader_id = CompileShader(LoadShaderSource(SHADER_FRAGMENT_FILEPATH), GL_FRAGMENT_SHADER);
 
 	program_id = CreateProgram(vertex_shader_id, fragment_shader_id);
 

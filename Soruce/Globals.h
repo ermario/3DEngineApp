@@ -60,6 +60,6 @@ enum update_status
 #define SDL_MOUSE_BUTTON_RIGHT 3
 
 // Files -----------
-#define SHADER_VERTEX_FILEPATH "vertex.glsl"
-#define SHADER_FRAGMENT_FILEPATH "fragment.glsl"
+#define SHADER_VERTEX_FILEPATH "Resources/vertex.glsl"
+#define SHADER_FRAGMENT_FILEPATH "Resources/fragment.glsl"
 
