@@ -19,6 +19,10 @@ public:
 	void LookAtTarget(const float3 target);
 	void Orbit(float direction, float direction_y);
 
+	void ComputeAspectRatio(float width, float height);
+	void ComputeHorizontalFov(float fov);
+	void UpdateFovAndAspectRatio(){ frustum.SetHorizontalFovAndAspectRatio(horizontal_fov, aspect_ratio); }
+	void UpdatePlaneDistances(){ frustum.SetViewPlaneDistances(near_plane_distance, far_plane_distance); }
 	float4x4 GetViewMatrix() const { return float4x4(frustum.ViewMatrix()); };
 	float4x4 GetViewMatrixTransposed() const { return float4x4(frustum.ViewMatrix()).Transposed(); };
 	float4x4 GetProjectionMatrix() const { return frustum.ProjectionMatrix(); };
@@ -35,5 +39,7 @@ private:
 	bool on_orbit = false;
 	float aspect_ratio = 0.0f;
 	float horizontal_fov = 0.0f;
+	float near_plane_distance = 0.0f;
+	float far_plane_distance = 0.0f;
 };
 

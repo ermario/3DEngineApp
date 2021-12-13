@@ -3,6 +3,7 @@
 #include "Application.h"
 #include "ModuleInput.h"
 #include "ModuleRender.h"
+#include "ModuleCamera.h"
 #include "SDL/include/SDL.h"
 
 #define MAX_KEYS 300
@@ -98,6 +99,11 @@ update_status ModuleInput::PreUpdate()
 
 				//case SDL_WINDOWEVENT_ENTER:
 			case SDL_WINDOWEVENT_SHOWN:
+			case SDL_WINDOWEVENT_RESIZED:
+			{
+				App->renderer->WindowResized(event.window.data1, event.window.data2);
+				App->camera->UpdateFovAndAspectRatio();
+			}
 			case SDL_WINDOWEVENT_FOCUS_GAINED:
 			case SDL_WINDOWEVENT_MAXIMIZED:
 			case SDL_WINDOWEVENT_RESTORED:

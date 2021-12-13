@@ -24,5 +24,5 @@ public:
 	void* context = NULL;
 	Model* model = nullptr;
 private:
-	
+
 };

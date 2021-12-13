@@ -22,11 +22,13 @@ ModuleCamera::~ModuleCamera()
 
 bool ModuleCamera::Init()
 {
-	aspect_ratio = (float(App->window->screen_surface->w) / float(App->window->screen_surface->h));
-	horizontal_fov = 90.0f * DEGTORAD;
+	ComputeAspectRatio(float(App->window->screen_surface->w) , float(App->window->screen_surface->h));
+	ComputeHorizontalFov(DEFAULT_FOV);
+	near_plane_distance = DEFAULT_NEAR_DIST; // TODO: Make it funciton?
+	far_plane_distance = DEFAULT_FAR_DIST;
 	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
-	frustum.SetViewPlaneDistances(0.1f, 100.0f);
-	frustum.SetHorizontalFovAndAspectRatio(horizontal_fov, aspect_ratio);
+	UpdatePlaneDistances();
+	UpdateFovAndAspectRatio();
 	frustum.SetPos(float3(0.0f, 5.0f, -10.0f));
 	float3x3 world_rotation = float3x3::identity;
 	frustum.SetFront(world_rotation.WorldZ());
@@ -107,8 +109,10 @@ void ModuleCamera::CameraMovement()
 		else
 		{
 			// FREE LOOK AROUND ROTATIONS USING MOUSE 
-			if (mouse_x != 0 || mouse_y != 0)
-				CameraRotation(-mouse_x * new_angle, -mouse_y * new_angle, 0.0f);
+			if (!camera_locked) {
+				if (mouse_x != 0 || mouse_y != 0)
+					CameraRotation(-mouse_x * new_angle, -mouse_y * new_angle, 0.0f);
+			}
 		}
 		
 	}
@@ -211,6 +215,16 @@ void ModuleCamera::Orbit(float direction_x, float direction_y)
 		camera_position += float3(0.0f, direction_y, 0.0f);
 	}
 	on_orbit = true;
+}
+
+void ModuleCamera::ComputeAspectRatio(float width, float height)
+{
+	aspect_ratio = width / height;
+}
+
+void ModuleCamera::ComputeHorizontalFov(float fov)
+{
+	horizontal_fov = fov * DEGTORAD;
 }
 
 void ModuleCamera::ImGuiCamera()

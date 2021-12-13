@@ -51,6 +51,14 @@ bool ModuleRender::Init()
 	glEnable(GL_CULL_FACE); // Enable cull backward faces
 	glFrontFace(GL_CCW); // Front faces will be counter clockwise
 
+	// INIT WINDOW
+
+	int width = NULL;
+	int height = NULL;
+	SDL_GetWindowSize(App->window->window, &width, &height); //update de width and height with the window size
+	glViewport(0, 0, width, height); // set the view port
+	glClearColor(0.10f, 0.10f, 0.10f, 1.0f); // specify clear values for the color buffers - RGBAlpha
+
 	//INIT TEXTURES
 
 	model = new Model();
@@ -61,12 +69,7 @@ bool ModuleRender::Init()
 
 update_status ModuleRender::PreUpdate()
 {
-	int width = NULL;
-	int height = NULL;
-	SDL_GetWindowSize(App->window->window, &width, &height); //update de width and height with the window size
-	glViewport(0, 0, width, height); // set the view port
-
-	glClearColor(0.10f, 0.10f, 0.10f, 1.0f); // specify clear values for the color buffers - RGBAlpha
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear buffers to preset values (from above)
 
 	return UPDATE_CONTINUE;
@@ -104,5 +107,10 @@ bool ModuleRender::CleanUp()
 
 void ModuleRender::WindowResized(unsigned width, unsigned height)
 {
+	if ((width && height) > 0)
+	{
+		glViewport(0, 0, width, height);
+		App->camera->ComputeAspectRatio(width, height); // CALL CAMERA ASPECT RATIO CALCULATION
+	}
 }
 

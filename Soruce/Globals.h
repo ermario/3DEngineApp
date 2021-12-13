@@ -44,6 +44,9 @@ enum update_status
 #define SCREEN_HEIGHT 720
 #define SCREEN_SIZE 2
 #define DEFAULT_SCREEN_RATIO 0.95f
+#define DEFAULT_FOV 90.0f
+#define DEFAULT_NEAR_DIST 0.1f
+#define DEFAULT_FAR_DIST 100.0f
 #define FULLSCREEN false
 #define RESIZABLE true
 #define VSYNC true
