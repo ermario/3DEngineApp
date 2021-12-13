@@ -36,12 +36,12 @@ public:
 	ModuleImGui* imgui = nullptr;
 	ModuleTexture* textures = nullptr;
 
-	inline uint32_t GetDeltaTime() { return delta_time; }
+	//inline double GetDeltaTime() { return delta_time; }
 private:
 
 	std::list<Module*> modules;
-	double delta_time = 0;
-	double ticks_count = 0;
+	//double delta_time = 0;
+	//double ticks_count = 0;
 
 };
 

@@ -186,6 +186,7 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -489,6 +490,7 @@
     <ClInclude Include="Console.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Modules">

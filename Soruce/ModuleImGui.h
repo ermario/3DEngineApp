@@ -39,7 +39,7 @@ public:
 	bool ExitPopup();
 
 private:
-	bool demo_tab = false;
+	bool demo_tab = true;
 	bool console_tab = false;
 	bool about_tab = false;
 	bool inspector_tab = true;

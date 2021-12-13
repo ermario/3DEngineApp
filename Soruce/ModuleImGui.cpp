@@ -60,7 +60,7 @@ update_status ModuleImGui::PreUpdate()
 
 	Menu();
 
-	if (console_tab) 
+	//if (console_tab) 
 		//debugger->Draw(&console_tab);
 
 	if (demo_tab)
