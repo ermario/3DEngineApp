@@ -7,7 +7,7 @@
 #include "ModuleTexture.h"
 
 
-float cube_vertices[] = {
+float square_vertices[] = {
      1.0f, 1.0f, 0.0f, // Triangle 1
      1.0f,-1.0f, 0.0f,
     -1.0f,-1.0f, 0.0f,
@@ -28,44 +28,6 @@ float vertices[] = {
      0.0f,  1.0f, 0.0f
 };
 
-static const GLfloat g_vertex_buffer_data[] = {
-    -1.0f,-1.0f,-1.0f, // triángulo 1 : comienza
-    -1.0f,-1.0f, 1.0f,
-    -1.0f, 1.0f, 1.0f, // triángulo 1 : termina
-    1.0f, 1.0f,-1.0f, // triángulo 2 : comienza
-    -1.0f,-1.0f,-1.0f,
-    -1.0f, 1.0f,-1.0f, // triángulo 2 : termina
-    1.0f,-1.0f, 1.0f,
-    -1.0f,-1.0f,-1.0f,
-    1.0f,-1.0f,-1.0f,
-    1.0f, 1.0f,-1.0f,
-    1.0f,-1.0f,-1.0f,
-    -1.0f,-1.0f,-1.0f,
-    -1.0f,-1.0f,-1.0f,
-    -1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f,-1.0f,
-    1.0f,-1.0f, 1.0f,
-    -1.0f,-1.0f, 1.0f,
-    -1.0f,-1.0f,-1.0f,
-    -1.0f, 1.0f, 1.0f,
-    -1.0f,-1.0f, 1.0f,
-    1.0f,-1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f,-1.0f,-1.0f,
-    1.0f, 1.0f,-1.0f,
-    1.0f,-1.0f,-1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f,-1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f,-1.0f,
-    -1.0f, 1.0f,-1.0f,
-    1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f,-1.0f,
-    -1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f, 1.0f,
-    1.0f,-1.0f, 1.0f
-};
 ModuleRenderExercise::ModuleRenderExercise()
 {
 
@@ -77,7 +39,7 @@ bool ModuleRenderExercise::Init()
     glGenBuffers(1, &vertex_buffer_object);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object);
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(square_vertices), square_vertices, GL_STATIC_DRAW);
     // size = 3 float per vertex
     // stride = 0 is equivalent to stride = sizeof(float)*3
     glEnableVertexAttribArray(0); // Shader
