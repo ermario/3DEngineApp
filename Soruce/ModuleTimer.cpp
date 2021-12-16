@@ -1,5 +1,10 @@
 #include "ModuleTimer.h"
+
 #include "SDL.h"
+#include "imgui.h"
+#include "imgui_impl_sdl.h"
+#include "imgui_impl_opengl3.h"
+
 
 ModuleTimer::ModuleTimer()
 {
@@ -22,7 +27,7 @@ update_status ModuleTimer::PreUpdate()
 
 update_status ModuleTimer::Update()
 {
-	UpdateDeltaTimer();
+	UpdateRealDeltaTimer();
 	return UPDATE_CONTINUE;
 }
 
@@ -36,9 +41,15 @@ bool ModuleTimer::CleanUp()
 	return false;
 }
 
-void ModuleTimer::UpdateDeltaTimer()
+void ModuleTimer::UpdateRealDeltaTimer()
 {
 	uint32_t current_tick = SDL_GetTicks();
-	delta_time = (current_tick - ticks_count);
-	ticks_count = current_tick;
+	real_delta_time = (current_tick - real_ticks_count);
+	real_ticks_count = current_tick;
 }
+
+void ModuleTimer::ImguiTimer()
+{
+	ImGui::GetTime();
+}
+

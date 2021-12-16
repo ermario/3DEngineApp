@@ -55,6 +55,7 @@ update_status ModuleCamera::Update()
 {
 	CameraMovement();
 	SetCameraPosition();
+	UpdatePlaneDistances();
 
 	//Send the frustum view matrix to OpenGL
 	float4x4 viewGL = float4x4(frustum.ViewMatrix()).Transposed();
@@ -244,4 +245,8 @@ void ModuleCamera::ImGuiCamera()
 		ImGui::SameLine();
 		ImGui::Text("(Rotation disabled)");
 	}
+	ImGui::Separator;
+	ImGui::Text("Camera Distance");
+	ImGui::SliderFloat("pixels", &far_plane_distance, 50.0f, 10000.0f, "%.3f", 1.0f);
+
 }
