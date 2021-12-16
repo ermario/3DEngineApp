@@ -65,4 +65,5 @@ enum update_status
 // Files -----------
 #define SHADER_VERTEX_FILEPATH "Resources/vertex.glsl"
 #define SHADER_FRAGMENT_FILEPATH "Resources/fragment.glsl"
+#define DEFAULT_SOLID_TEXTURE "Resources/Textures/solid_texture.png"
 

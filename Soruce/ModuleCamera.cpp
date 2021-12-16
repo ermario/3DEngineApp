@@ -5,6 +5,7 @@
 #include "ModuleInput.h"
 #include "ModuleWindow.h"
 #include "ModuleRender.h"
+#include "ModuleTimer.h"
 
 #include "MathGeoLib.h"
 #include "GL/glew.h"
@@ -68,7 +69,7 @@ void ModuleCamera::CameraMovement()
 	float movement_speed = 15.0f / MILI_TO_SECONDS;
 	float rotation_speed = 1.5f / MILI_TO_SECONDS;
 	float zoom_speed = 5.0f;
-	double delta = App->GetDeltaTime();
+	double delta = App->timer->GetDeltaTime();
 
 	const float zoom_min = 90.0f * DEGTORAD;
 	const float zoom_max = 45.0f * DEGTORAD;

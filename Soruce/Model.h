@@ -23,7 +23,7 @@ private:
 	void LoadMeshes(const aiScene* scene);
 	void LoadTextures(const aiScene* scene);
 
-	std::vector<Texture> textures;
+	std::vector<Texture> texture;
 	std::vector<Mesh> meshes;
 	float4x4 model_matrix = float4x4::identity;
 

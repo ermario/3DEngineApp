@@ -14,6 +14,7 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
+	void UpdateDeltaTimer();
 	inline double GetDeltaTime() { return delta_time; }
 
 private:

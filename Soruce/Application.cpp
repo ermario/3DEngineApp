@@ -10,12 +10,14 @@
 #include "ModuleInput.h"
 #include "ModuleImGui.h"
 #include "ModuleTexture.h"
+#include "ModuleTimer.h"
 
 using namespace std;
 
 Application::Application()
 {
 	// Order matters: they will Init/start/update in this order
+	modules.push_back(timer = new ModuleTimer());
 	modules.push_back(window = new ModuleWindow());
 	modules.push_back(camera = new ModuleCamera());
 	modules.push_back(textures = new ModuleTexture());
@@ -49,11 +51,6 @@ bool Application::Init()
 
 update_status Application::Update()
 { 
-	/*
-	uint32_t current_tick = SDL_GetTicks();
-	delta_time = (current_tick - ticks_count);
-	ticks_count = current_tick;
-	*/
 	update_status ret = UPDATE_CONTINUE;
 
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)

@@ -13,6 +13,7 @@ class ModuleCamera;
 class ModuleDebugDraw;
 class ModuleImGui;
 class ModuleTexture;
+class ModuleTimer;
 
 class Application
 {
@@ -35,13 +36,11 @@ public:
 	ModuleDebugDraw* grid = nullptr;
 	ModuleImGui* imgui = nullptr;
 	ModuleTexture* textures = nullptr;
+	ModuleTimer* timer = nullptr;
 
-	//inline double GetDeltaTime() { return delta_time; }
 private:
 
 	std::list<Module*> modules;
-	//double delta_time = 0;
-	//double ticks_count = 0;
 
 };
 

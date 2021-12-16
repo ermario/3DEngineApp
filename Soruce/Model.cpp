@@ -23,7 +23,7 @@ void Model::Draw()
 	if(model_loaded)
 	{
 		for (Mesh& mesh : meshes) { //FOREACH mesh inside meshes 
-			mesh.Draw(textures);
+			mesh.Draw(texture);
 		}
 	}
 }
@@ -37,7 +37,6 @@ void Model::LoadModel(const char* file_name)
 	const aiScene* scene = aiImportFile(file_name, aiProcess_Triangulate); //aiProcess_Triangulate fixes EBO with multiple meshes
 	if (scene)
 	{
-		//TODO: ERROR CONTROL 
 		LoadTextures(scene);
 		LoadMeshes(scene);
 		model_loaded = true;
@@ -57,10 +56,10 @@ void Model::CleanUp()
 	meshes.clear();
 
 	//Clear Textures
-	for (Texture texture : textures) {
+	for (Texture texture : texture) {
 		glDeleteTextures(1, &texture.id);
 	}
-	textures.clear();
+	texture.clear();
 
 	model_loaded = false;
 	EngineLOG("------ MODEL UNLOADED ------");
@@ -74,7 +73,7 @@ const float3 Model::GetModelPos() const
 
 void Model::LoadMeshes(const aiScene* scene)
 {
-	textures.reserve(scene->mNumMeshes);
+	texture.reserve(scene->mNumMeshes);
 	EngineLOG("2- Loading Meshes: %d", scene->mNumMeshes)
 	for (unsigned i = 0; i < scene->mNumMeshes; i++)
 	{
@@ -96,7 +95,7 @@ void Model::LoadTextures(const aiScene* scene)
 	EngineLOG("1- Loading Textures: %d", scene->mNumMaterials);
 	aiString file;
 
-	textures.reserve(scene->mNumMaterials);
+	texture.reserve(scene->mNumMaterials);
 	for (unsigned i = 0; i < scene->mNumMaterials; ++i)
 	{
 		if (scene->mMaterials[i]->GetTexture(aiTextureType_DIFFUSE, 0, &file) == AI_SUCCESS)
@@ -124,9 +123,19 @@ void Model::LoadTextures(const aiScene* scene)
 			}
 
 			if (aux_texture.is_loaded)
-				textures.push_back(aux_texture);
+				texture.push_back(aux_texture);
 			else
 				EngineLOG("ERR: Texture: %s can not be found", texture_path.c_str())
+		}
+		else
+		{
+			Texture aux_texture = App->textures->CompileTexture(DEFAULT_SOLID_TEXTURE); // a) First check on the path described in the FBX
+			if (!aux_texture.is_loaded)
+			{
+				EngineLOG("ERR: Failed loading solid texture");
+			}
+			if (aux_texture.is_loaded)
+				texture.push_back(aux_texture);
 		}
 	}
 }
